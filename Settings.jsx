@@ -31,6 +31,7 @@ const { RadioGroup, SwitchItem } = require('powercord/components/settings');
 
 const ChannelMessage = getModule([ 'MESSAGE_ID_PREFIX' ], false).default;
 const Message = getModule(m => m.prototype && m.prototype.getReaction && m.prototype.isSystemDM, false);
+const discordSettings = getModule([ 'messageDisplayCompact' ], false);
 
 const CHANNEL = {
   isPrivate: () => false,
@@ -78,6 +79,7 @@ function Settings ({ getSetting, updateSetting, toggleSetting }) {
         }}
       >
         <ChannelMessage
+          compact={discordSettings.messageDisplayCompact}
           channel={CHANNEL}
           message={MESSAGE}
           id='uwu'

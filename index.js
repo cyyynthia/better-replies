@@ -132,7 +132,6 @@ module.exports = class BetterReplies extends Plugin {
           const reactInstance = getReactInstance(document.querySelector('.channelTextArea-rNsIhG'));
           const textarea = findInReactTree(reactInstance.memoizedProps, n => n.richValue && n.onKeyDown);
           const { selection } = textarea.richValue;
-          console.log(textarea);
 
           if (quickToggle && toggler && e.key === 'Backspace' && selection.start.offset === 0 && selection.end.offset === 0) {
             toggler.click();
