@@ -26,7 +26,7 @@
  */
 
 const { getModule } = require('powercord/webpack');
-const { findInReactTree } = require('powercord/util');
+const { findInReactTree, getReactInstance } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
 const { Plugin } = require('powercord/entities');
 
@@ -99,8 +99,8 @@ module.exports = class BetterReplies extends Plugin {
         res.props.children.props.children[0] = null;
       }
 
-      const handler = res.props.children.props.onContextMenu;
-      res.props.children.props.onContextMenu = (e, t) => {
+      const handler = res.props.children.props.onClick;
+      res.props.children.props.onClick = (e, t) => {
         const quickReply = this.settings.get('quick-reply', false);
         if (quickReply && e.shiftKey) {
           e.preventDefault();
@@ -126,11 +126,15 @@ module.exports = class BetterReplies extends Plugin {
       if (ta.onKeyDown !== prevFn) {
         prevFn = ta.onKeyDown;
         injectedFn = ((prev, e) => {
-          const quickToggle = this.settings.get('quick-toggle', false);
-
           // I cba to do something decent, DOM access is enough
+          const quickToggle = this.settings.get('quick-toggle', false);
           const toggler = document.querySelector('.channelTextArea-rNsIhG .mentionButton-3710-W');
-          if (quickToggle && toggler && e.key === 'Backspace' && ta.richValue.selection.start.offset === 0 && ta.richValue.selection.end.offset === 0) {
+          const reactInstance = getReactInstance(document.querySelector('.channelTextArea-rNsIhG'));
+          const textarea = findInReactTree(reactInstance.memoizedProps, n => n.richValue && n.onKeyDown);
+          const { selection } = textarea.richValue;
+          console.log(textarea);
+
+          if (quickToggle && toggler && e.key === 'Backspace' && selection.start.offset === 0 && selection.end.offset === 0) {
             toggler.click();
             return;
           }
