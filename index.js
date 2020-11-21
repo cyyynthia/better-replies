@@ -32,6 +32,8 @@ const { Plugin } = require('powercord/entities');
 
 const Settings = require('./Settings');
 
+let prevFn = null;
+let injectedFn = null;
 module.exports = class BetterReplies extends Plugin {
   async startPlugin () {
     this.loadStylesheet('style.css');
@@ -115,23 +117,28 @@ module.exports = class BetterReplies extends Plugin {
         }
         handler(e, t);
       };
+
       return res;
     });
 
     inject('brep-reply-quick-toggle', ChannelTextAreaContainer.type, 'render', (args, res) => {
       const ta = findInReactTree(res, n => n.richValue && n.onKeyDown);
-      const handler = ta.onKeyDown;
-      ta.onKeyDown = (e) => {
-        const quickToggle = this.settings.get('quick-toggle', false);
+      if (ta.onKeyDown !== prevFn) {
+        prevFn = ta.onKeyDown;
+        injectedFn = ((prev, e) => {
+          const quickToggle = this.settings.get('quick-toggle', false);
 
-        // I cba to do something decent, DOM access is enough
-        const toggler = document.querySelector('.channelTextArea-rNsIhG .mentionButton-3710-W');
-        if (quickToggle && toggler && e.key === 'Backspace' && ta.richValue.selection.start.offset === 0 && ta.richValue.selection.end.offset === 0) {
-          toggler.click();
-          return;
-        }
-        handler(e);
-      };
+          // I cba to do something decent, DOM access is enough
+          const toggler = document.querySelector('.channelTextArea-rNsIhG .mentionButton-3710-W');
+          if (quickToggle && toggler && e.key === 'Backspace' && ta.richValue.selection.start.offset === 0 && ta.richValue.selection.end.offset === 0) {
+            toggler.click();
+            return;
+          }
+          prev(e);
+        }).bind(null, prevFn);
+      }
+
+      ta.onKeyDown = injectedFn;
       return res;
     });
 
@@ -139,6 +146,8 @@ module.exports = class BetterReplies extends Plugin {
   }
 
   pluginWillUnload () {
+    prevFn = null;
+    injectedFn = null;
     powercord.api.settings.unregisterSettings(this.entityID);
     uninject('brep-fake-ref');
     uninject('brep-reply-mention-setting');
