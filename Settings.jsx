@@ -41,6 +41,7 @@ const CHANNEL = {
 const MESSAGE_REF = new Message({
   id: 'owo',
   author: {
+    id: 'a',
     username: 'Ben',
     toString: () => 'Ben',
     isSystemUser: () => false,
@@ -54,6 +55,7 @@ const MESSAGE = new Message({
   id: 'uwu',
   type: 19,
   author: {
+    id: 'b',
     username: 'Bowser65',
     toString: () => 'Bowser65',
     isSystemUser: () => false,
