@@ -135,6 +135,13 @@ function Settings ({ getSetting, updateSetting, toggleSetting }) {
         Mention settings
       </RadioGroup>
       <SwitchItem
+        value={getSetting('no-replied-to', false)}
+        onChange={() => toggleSetting('no-replied-to')}
+        note={'Whether the "Replied to <user>" text in messages should be hidden or not.'}
+      >
+        Hide "Replied to"
+      </SwitchItem>
+      <SwitchItem
         value={getSetting('quick-toggle', false)}
         onChange={() => toggleSetting('quick-toggle')}
         note={'Whether the mention should be toggled when pressing backspace while you\'re at the beginning of the message.'}

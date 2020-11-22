@@ -47,3 +47,7 @@
 .compact-T3H92H .contents-2mQqc9 .repliedMessage-VokQwo .repliedTextPreview-2NBljf {
   text-indent: 0;
 }
+
+.better-replies-hidden, .better-replies-hidden + span {
+  display: none;
+}
