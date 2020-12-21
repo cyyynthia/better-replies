@@ -49,7 +49,6 @@ module.exports = class BetterReplies extends Plugin {
     const Message = await getModule(m => m.default?.displayName === 'Message');
     const ChannelReply = await getModule(m => m.default?.displayName === 'ChannelReply');
     const ChannelTextAreaContainer = await getModule((m) => m.type?.render?.displayName === 'ChannelTextAreaContainer');
-    const MessageHeader = await getModule([ 'MessageTimestamp' ]);
 
     inject('brep-fake-ref', referenceStore, 'getMessageByReference', (args, res) => {
       if (args[0]?.__betterRepliesFakeMessage) {
@@ -122,17 +121,6 @@ module.exports = class BetterReplies extends Plugin {
       return res;
     });
 
-    inject('brep-reply-appearance-header', MessageHeader, 'default', (args, res) => {
-      const noRepliedTo = this.settings.get('no-replied-to', false);
-      if (noRepliedTo) {
-        const replied = findInReactTree(res, n => n.className?.startsWith('replyLink'));
-        if (replied) {
-          replied.className += ' better-replies-hidden';
-        }
-      }
-      return res;
-    });
-
     inject('brep-reply-quick-toggle', ChannelTextAreaContainer.type, 'render', (args, res) => {
       const ta = findInReactTree(res, n => n.richValue && n.onKeyDown);
       if (ta.onKeyDown !== prevFn) {
@@ -157,7 +145,6 @@ module.exports = class BetterReplies extends Plugin {
       return res;
     });
 
-
     Message.default.displayName = 'Message';
     ChannelReply.default.displayName = 'ChannelReply';
     ChannelTextAreaContainer.type.render.displayName = 'ChannelTextAreaContainer';
@@ -171,7 +158,6 @@ module.exports = class BetterReplies extends Plugin {
     uninject('brep-reply-mention-setting');
     uninject('brep-reply-mention-toggle');
     uninject('brep-reply-appearance');
-    uninject('brep-reply-appearance-header');
     uninject('brep-reply-quick-toggle');
   }
 };

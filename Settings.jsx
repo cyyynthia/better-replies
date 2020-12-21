@@ -29,7 +29,7 @@ const { React, getModule } = require('powercord/webpack');
 const { FormTitle } = require('powercord/components');
 const { RadioGroup, SwitchItem } = require('powercord/components/settings');
 
-const ChannelMessage = getModule([ 'MESSAGE_ID_PREFIX' ], false).default;
+const ChannelMessage = getModule([ 'getElementFromMessageId' ], false).default;
 const Message = getModule(m => m.prototype && m.prototype.getReaction && m.prototype.isSystemDM, false);
 const discordSettings = getModule([ 'messageDisplayCompact' ], false);
 
@@ -82,7 +82,7 @@ function Settings ({ getSetting, updateSetting, toggleSetting }) {
           compact={discordSettings.messageDisplayCompact}
           channel={CHANNEL}
           message={MESSAGE}
-          id='uwu'
+          id={`uwu-${getSetting('appearance', 'default')}`}
           groupId='uwu'
         />
       </div>
@@ -104,7 +104,7 @@ function Settings ({ getSetting, updateSetting, toggleSetting }) {
           },
           {
             name: 'Hidden',
-            desc: 'Don\'t show the quoted message. You\'ll still see the "Replied to" note on the message.',
+            desc: 'This will completely disable inline replies from showing up.',
             value: 'hidden'
           }
         ]}
@@ -134,13 +134,6 @@ function Settings ({ getSetting, updateSetting, toggleSetting }) {
       >
         Mention settings
       </RadioGroup>
-      <SwitchItem
-        value={getSetting('no-replied-to', false)}
-        onChange={() => toggleSetting('no-replied-to')}
-        note={'Whether the "Replied to <user>" text in messages should be hidden or not.'}
-      >
-        Hide "Replied to"
-      </SwitchItem>
       <SwitchItem
         value={getSetting('quick-toggle', false)}
         onChange={() => toggleSetting('quick-toggle')}
