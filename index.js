@@ -99,6 +99,7 @@ module.exports = class BetterReplies extends Plugin {
         res.props.children.props.children[0] = null;
       }
 
+      /*
       const handler = res.props.children.props.onClick;
       res.props.children.props.onClick = (e, t) => {
         const quickReply = this.settings.get('quick-reply', false);
@@ -117,6 +118,7 @@ module.exports = class BetterReplies extends Plugin {
         }
         handler(e, t);
       };
+      */
 
       return res;
     });
