@@ -61,7 +61,7 @@ class ErrorBoundary extends React.PureComponent {
           <p>
             An error occurred while rendering the preview. Please let Cynthia know by sending her a message with the
             error message on the <a href='#' onClick={this.joinPorkord}>Powercord server</a>, or by opening an issue
-            on the <a href={`https://github.com/${REPO}/issues`}>GitHub repository</a>.
+            on the <a href={`https://github.com/${REPO}/issues`} target='_blank'>GitHub repository</a>.
           </p>
           <code>{this.state.error}</code>
         </Card>
