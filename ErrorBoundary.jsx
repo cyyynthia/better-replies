@@ -25,46 +25,56 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* If it's tucked there, it's meant to be shown as a quote */
-.contents-2mQqc9 .repliedMessage-VokQwo {
-  padding: 4px 14px;
-  margin: 4px 0;
+const { resolve } = require('path')
+const { React, getModule } = require('powercord/webpack')
+const { Card } = require('powercord/components')
+const { DISCORD_INVITE, SpecialChannels: { SUPPORT_PLUGINS }, SETTINGS_FOLDER } = require('powercord/constants')
+const { gotoOrJoinServer } = require('powercord/util')
+
+const REPO = 'cyyynthia/better-replies'
+
+class ErrorBoundary extends React.PureComponent {
+  constructor (props) {
+    super(props)
+
+    this.state = { crashed: false }
+  }
+
+  componentDidCatch (e) {
+    const basePath = resolve(SETTINGS_FOLDER, '..')
+
+    this.setState({
+      crashed: true,
+      error: (e.stack || '')
+        .split('\n')
+        .filter(l => !l.includes('discordapp.com/assets/') && !l.includes('discord.com/assets/'))
+        .join('\n')
+        .split(basePath)
+        .join('')
+    })
+  }
+
+  render () {
+    if (this.state.crashed) {
+      return (
+        <Card className='better-replies-error'>
+          <p>
+            An error occurred while rendering the preview. Please let Cynthia know by sending her a message with the
+            error message on the <a href='#' onClick={this.joinPorkord}>Powercord server</a>, or by opening an issue
+            on the <a href={`https://github.com/${REPO}/issues`}>GitHub repository</a>.
+          </p>
+          <code>{this.state.error}</code>
+        </Card>
+      )
+    }
+
+    return this.props.children
+  }
+
+  joinPorkord () {
+    getModule([ 'popLayer' ], false).popLayer()
+    gotoOrJoinServer(DISCORD_INVITE, SUPPORT_PLUGINS)
+  }
 }
 
-.contents-2mQqc9 .repliedMessage-VokQwo::before {
-  left: 0;
-  top: 0;
-  bottom: 0;
-  margin: 0;
-}
-
-.compact-T3H92H .contents-2mQqc9 .repliedMessage-VokQwo {
-  margin: 0;
-  padding: 2px 8px;
-}
-
-.compact-T3H92H .contents-2mQqc9 .repliedMessage-VokQwo .username-1A8OIy,
-.compact-T3H92H .contents-2mQqc9 .repliedMessage-VokQwo .repliedTextPreview-2NBljf {
-  text-indent: 0;
-}
-
-.better-replies-hidden, .better-replies-hidden + span {
-  display: none;
-}
-
-.better-replies-error {
-  padding: 20px;
-  margin-bottom: 20px;
-  color: var(--text-normal);
-  border-color: #f04747;
-  background-color: #f0474730;
-}
-
-.better-replies-error p {
-  margin: 0;
-  margin-bottom: 8px;
-}
-
-.better-replies-error code {
-  user-select: text;
-}
+module.exports = ErrorBoundary

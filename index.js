@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Cynthia K. Rey, All rights reserved.
+ * Copyright (c) 2020-2021 Cynthia K. Rey, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -99,27 +99,6 @@ module.exports = class BetterReplies extends Plugin {
         res.props.children.props.children[0] = null;
       }
 
-      /*
-      const handler = res.props.children.props.onClick;
-      res.props.children.props.onClick = (e, t) => {
-        const quickReply = this.settings.get('quick-reply', false);
-        if (quickReply && e.shiftKey) {
-          e.preventDefault();
-          e.stopPropagation();
-
-          const u = userStore.getCurrentUser();
-          const shouldMention = res.props.children.props.children[2].props.message.author.id !== u.id;
-          replierMdl.createPendingReply({
-            message: res.props.children.props.children[2].props.message,
-            channel: res.props.children.props.children[2].props.channel,
-            shouldMention
-          });
-          return;
-        }
-        handler(e, t);
-      };
-      */
-
       return res;
     });
 
@@ -135,6 +114,7 @@ module.exports = class BetterReplies extends Plugin {
           const textarea = findInReactTree(reactInstance.memoizedProps, n => n.richValue && n.onKeyDown);
           const { selection } = textarea.richValue;
 
+          // todo: fix this shit
           if (quickToggle && toggler && e.key === 'Backspace' && selection.start.offset === 0 && selection.end.offset === 0) {
             toggler.click();
             return;

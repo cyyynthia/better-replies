@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Cynthia K. Rey, All rights reserved.
+ * Copyright (c) 2020-2021 Cynthia K. Rey, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,67 +25,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-const { React, getModule } = require('powercord/webpack');
+const { React } = require('powercord/webpack');
 const { FormTitle } = require('powercord/components');
 const { RadioGroup, SwitchItem } = require('powercord/components/settings');
 
-const ChannelMessage = getModule([ 'getElementFromMessageId' ], false).default;
-const Message = getModule(m => m.prototype && m.prototype.getReaction && m.prototype.isSystemDM, false);
-const discordSettings = getModule([ 'messageDisplayCompact' ], false);
-
-const CHANNEL = {
-  isPrivate: () => false,
-  isSystemDM: () => false,
-  getGuildId: () => 'uwu'
-};
-
-const MESSAGE_REF = new Message({
-  id: 'owo',
-  author: {
-    id: 'a',
-    username: 'Ben',
-    toString: () => 'Ben',
-    isSystemUser: () => false,
-    isVerifiedBot: () => false,
-    getAvatarURL: () => 'https://powercord.dev/api/v2/avatar/465668689920917534.png'
-  },
-  content: 'Bowser be droppin another hot plugin soon™️'
-});
-
-const MESSAGE = new Message({
-  id: 'uwu',
-  type: 19,
-  author: {
-    id: 'b',
-    username: 'Bowser65',
-    toString: () => 'Bowser65',
-    isSystemUser: () => false,
-    isVerifiedBot: () => false,
-    getAvatarURL: () => 'https://powercord.dev/api/v2/avatar/94762492923748352.png'
-  },
-  content: 'Heck yeah 😎', // I could have put a lot of salt but the babies would have cried again 🙄
-  messageReference: {
-    __betterRepliesFakeMessage: MESSAGE_REF
-  }
-});
+const ErrorBoundary = require('./ErrorBoundary.jsx')
+const Preview = require('./Preview.jsx')
 
 function Settings ({ getSetting, updateSetting, toggleSetting }) {
   return (
     <>
-      <div
-        style={{
-          marginBottom: 20,
-          pointerEvents: 'none'
-        }}
-      >
-        <ChannelMessage
-          compact={discordSettings.messageDisplayCompact}
-          channel={CHANNEL}
-          message={MESSAGE}
-          id={`uwu-${getSetting('appearance', 'default')}`}
-          groupId='uwu'
-        />
-      </div>
+      <ErrorBoundary>
+        <Preview appearance={getSetting('appearance', 'default')}/>
+      </ErrorBoundary>
+
       <FormTitle tag='h4'>Settings</FormTitle>
       <div style={{ marginBottom: 20 }}/>
       <RadioGroup
@@ -137,16 +90,9 @@ function Settings ({ getSetting, updateSetting, toggleSetting }) {
       <SwitchItem
         value={getSetting('quick-toggle', false)}
         onChange={() => toggleSetting('quick-toggle')}
-        note={'Whether the mention should be toggled when pressing backspace while you\'re at the beginning of the message.'}
+        note={'Whether the mention should be toggled when pressing backspace while you\'re at the beginning of the message. Currently a bit buggy :('}
       >
         Quick toggle
-      </SwitchItem>
-      <SwitchItem
-        value={getSetting('quick-reply', false)}
-        onChange={() => toggleSetting('quick-reply')}
-        note={<>Whether <code>Shift+Left Click</code> on a message should initiate a reply or not.<br/><br/>Configurable keybinds will eventually come before 2069.</>}
-      >
-        Quick reply
       </SwitchItem>
     </>
   );
