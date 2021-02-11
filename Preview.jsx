@@ -34,7 +34,8 @@ const discordSettings = getModule([ 'messageDisplayCompact' ], false);
 const CHANNEL = {
   isPrivate: () => false,
   isSystemDM: () => false,
-  getGuildId: () => 'uwu'
+  getGuildId: () => 'uwu',
+  isArchivedThread: () => false
 };
 
 const MESSAGE_REF = new Message({
