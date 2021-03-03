@@ -46,7 +46,7 @@ module.exports = class BetterReplies extends Plugin {
     const userStore = await getModule([ 'getCurrentUser' ]);
     const referenceStore = await getModule([ 'getMessageByReference' ]);
     const replierMdl = await getModule([ 'createPendingReply' ]);
-    const Message = await getModule(m => m.default?.displayName === 'Message');
+    const Message = await getModule(m => (m.__powercordOriginal_default || m.default)?.toString().includes('childrenRepliedMessage'));
     const ChannelReply = await getModule(m => m.default?.displayName === 'ChannelReply');
     const ChannelTextAreaContainer = await getModule((m) => m.type?.render?.displayName === 'ChannelTextAreaContainer');
 
@@ -127,7 +127,6 @@ module.exports = class BetterReplies extends Plugin {
       return res;
     });
 
-    Message.default.displayName = 'Message';
     ChannelReply.default.displayName = 'ChannelReply';
     ChannelTextAreaContainer.type.render.displayName = 'ChannelTextAreaContainer';
   }
