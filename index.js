@@ -93,7 +93,7 @@ module.exports = class BetterReplies extends Plugin {
     inject('brep-reply-appearance', Message, 'default', (_, res) => {
       const appearance = this.settings.get('appearance', 'default');
       if (appearance === 'quote') {
-        res.props.children.props.children[1].props.children.splice(2, 0, res.props.children.props.children[0]);
+        res.props.children.props.children[2].props.children.splice(2, 0, res.props.children.props.children[0]);
       }
       if (appearance !== 'default') {
         res.props.children.props.children[0] = null;
