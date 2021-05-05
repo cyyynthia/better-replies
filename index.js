@@ -32,8 +32,6 @@ const { Plugin } = require('powercord/entities');
 
 const Settings = require('./Settings');
 
-let prevFn = null;
-let injectedFn = null;
 module.exports = class BetterReplies extends Plugin {
   async startPlugin () {
     this.loadStylesheet('style.css');
@@ -102,6 +100,7 @@ module.exports = class BetterReplies extends Plugin {
       return res;
     });
 
+    /*
     inject('brep-reply-quick-toggle', ChannelTextAreaContainer.type, 'render', (args, res) => {
       const ta = findInReactTree(res, n => n.richValue && n.onKeyDown);
       if (ta.onKeyDown !== prevFn) {
@@ -126,14 +125,13 @@ module.exports = class BetterReplies extends Plugin {
       ta.onKeyDown = injectedFn;
       return res;
     });
+    */
 
     ChannelReply.default.displayName = 'ChannelReply';
     ChannelTextAreaContainer.type.render.displayName = 'ChannelTextAreaContainer';
   }
 
   pluginWillUnload () {
-    prevFn = null;
-    injectedFn = null;
     powercord.api.settings.unregisterSettings(this.entityID);
     uninject('brep-fake-ref');
     uninject('brep-reply-mention-setting');

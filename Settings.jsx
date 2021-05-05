@@ -88,9 +88,11 @@ function Settings ({ getSetting, updateSetting, toggleSetting }) {
         Mention settings
       </RadioGroup>
       <SwitchItem
+        disabled
         value={getSetting('quick-toggle', false)}
         onChange={() => toggleSetting('quick-toggle')}
-        note={'Whether the mention should be toggled when pressing backspace while you\'re at the beginning of the message. Currently a bit buggy :('}
+        note2={'Whether the mention should be toggled when pressing backspace while you\'re at the beginning of the message. Currently a bit buggy :('}
+        note={'This setting has been disabled due to a bug. Will be hopefully back before 2030.'}
       >
         Quick toggle
       </SwitchItem>
