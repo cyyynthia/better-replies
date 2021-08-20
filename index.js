@@ -26,7 +26,7 @@
  */
 
 const { getModule } = require('powercord/webpack');
-const { findInReactTree, getReactInstance } = require('powercord/util');
+const { findInReactTree } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
 const { Plugin } = require('powercord/entities');
 
@@ -64,6 +64,7 @@ module.exports = class BetterReplies extends Plugin {
       if (mode === 'never') {
         args[0].shouldMention = false;
       }
+
       if (mode === 'remember') {
         const u = userStore.getCurrentUser();
         args[0].shouldMention = args[0].message.author.id !== u.id && this.settings.get('--mention-cache', true);

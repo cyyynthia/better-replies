@@ -35,7 +35,8 @@ const CHANNEL = {
   isPrivate: () => false,
   isSystemDM: () => false,
   getGuildId: () => 'uwu',
-  isArchivedThread: () => false
+  isArchivedThread: () => false,
+  isThread: () => false
 };
 
 const MESSAGE_REF = new Message({
@@ -46,6 +47,7 @@ const MESSAGE_REF = new Message({
     toString: () => 'Ben',
     isSystemUser: () => false,
     isVerifiedBot: () => false,
+    isNonUserBot: () => false,
     getAvatarURL: () => 'https://powercord.dev/api/v2/avatar/465668689920917534.png'
   },
   content: 'Cynthia be droppin another hot plugin soon™️'
@@ -60,20 +62,16 @@ const MESSAGE = new Message({
     toString: () => 'Cynthia 🌹',
     isSystemUser: () => false,
     isVerifiedBot: () => false,
+    isNonUserBot: () => false,
     getAvatarURL: () => 'https://powercord.dev/api/v2/avatar/94762492923748352.png'
   },
-  content: 'Heck yeah 😎', // I could have put a lot of salt but the babies would have cried again 🙄
+  content: 'Heck yeah 😎',
   messageReference: { __betterRepliesFakeMessage: MESSAGE_REF }
 });
 
 function Settings ({ appearance }) {
   return (
-    <div
-      style={{
-        marginBottom: 20,
-        pointerEvents: 'none'
-      }}
-    >
+    <div className='better-replies-preview-container'>
       <ChannelMessage
         compact={discordSettings.messageDisplayCompact}
         channel={CHANNEL}

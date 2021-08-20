@@ -52,6 +52,15 @@
   display: none;
 }
 
+.better-replies-preview-container {
+  margin-bottom: 20px;
+  pointer-events: none;
+}
+
+.better-replies-preview-container * {
+  pointer-events: none !important;
+}
+
 .better-replies-error {
   padding: 20px;
   margin-bottom: 20px;
