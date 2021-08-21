@@ -25,7 +25,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-const { getModule } = require('powercord/webpack');
+const { React, getModule } = require('powercord/webpack');
+const { Tooltip } = require('powercord/components');
 const { findInReactTree } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
 const { Plugin } = require('powercord/entities');
@@ -41,23 +42,17 @@ module.exports = class BetterReplies extends Plugin {
       render: Settings
     });
 
+    this.injectOutgoingReplies()
+    this.injectIncomingReplies()
+    this.injectFakeReference()
+  }
+
+  async injectOutgoingReplies () {
     const userStore = await getModule([ 'getCurrentUser' ]);
-    const referenceStore = await getModule([ 'getMessageByReference' ]);
     const replierMdl = await getModule([ 'createPendingReply' ]);
     const Message = await getModule(m => (m.__powercordOriginal_default || m.default)?.toString().includes('childrenRepliedMessage'));
     const ChannelReply = await getModule(m => m.default?.displayName === 'ChannelReply');
     const ChannelTextAreaContainer = await getModule((m) => m.type?.render?.displayName === 'ChannelTextAreaContainer');
-
-    inject('brep-fake-ref', referenceStore, 'getMessageByReference', (args, res) => {
-      if (args[0]?.__betterRepliesFakeMessage) {
-        return {
-          message: args[0].__betterRepliesFakeMessage,
-          state: 0
-        };
-      }
-
-      return res;
-    });
 
     inject('brep-reply-mention-setting', replierMdl, 'createPendingReply', (args) => {
       const mode = this.settings.get('mention', 'always');
@@ -132,12 +127,89 @@ module.exports = class BetterReplies extends Plugin {
     ChannelTextAreaContainer.type.render.displayName = 'ChannelTextAreaContainer';
   }
 
+  async injectIncomingReplies () {
+    const userStore = await getModule([ 'getCurrentUser' ]);
+    const messageHandler = await getModule([ 'createMessageRecord' ])
+    const RepliedMessage = await getModule((m) => m.default?.displayName === 'RepliedMessage')
+
+    inject('brep-notif-receive', messageHandler, 'createMessageRecord', (args) => {
+      const msg = args[0]
+      const user = userStore.getCurrentUser()
+      const mode = this.settings.get('ping', 'default')
+
+      if (mode === 'default' || msg.state === 'SENDING' || !msg.referenced_message) {
+        return args
+      }
+
+      const isMentioned = Boolean(msg.mentions.find((u) => u.id === user.id))
+      if (mode === 'never' && !msg.mention_everyone && isMentioned && !msg.content.includes(user.id)) {
+        msg.message_reference.__brepSuppressed = true
+        msg.mentions = msg.mentions.filter((u) => u.id !== user.id)
+      }
+
+      if (mode === 'always' && !isMentioned && msg.referenced_message.author.id === user.id && msg.author.id !== user.id) {
+        msg.message_reference.__brepEnforced = true
+        msg.mentions.push(user)
+      }
+
+      return args
+    }, true)
+
+    inject('brep-notif-visual', RepliedMessage, 'default', ([ { baseMessage: { messageReference }, repliedAuthor: { colorString } } ], res) => {
+      if (messageReference.__brepEnforced || messageReference.__brepSuppressed) {
+        const idx = res.props.children.findIndex((n) =>'withMentionPrefix' in n.props)
+        const username = res.props.children[idx]
+        username.props.withMentionPrefix = false
+        console.log(username, messageReference)
+        // Tooltip
+        if (messageReference.__brepEnforced) {
+          res.props.children[idx] = [
+            React.createElement(Tooltip, { text: 'Ping enforced' },
+              React.createElement('b', { className: 'desaturateUserColors-1gar-1', style: { color: colorString } }, '@')),
+            username
+          ]
+        }
+
+        if (messageReference.__brepSuppressed) {
+          res.props.children[idx] = [
+            React.createElement(Tooltip, { text: 'Ping suppressed' },
+              React.createElement('span', { style: { color: 'var(--text-muted)' } }, '@')),
+            username
+          ]
+        }
+        console.log(res.props.children[idx], messageReference)
+      }
+      return res
+    })
+
+    RepliedMessage.default.displayName = 'RepliedMessage'
+  }
+
+  async injectFakeReference () {
+    const referenceStore = await getModule([ 'getMessageByReference' ]);
+
+    inject('brep-fake-ref', referenceStore, 'getMessageByReference', (args, res) => {
+      if (args[0]?.__betterRepliesFakeMessage) {
+        return {
+          message: args[0].__betterRepliesFakeMessage,
+          state: 0
+        };
+      }
+
+      return res;
+    });
+  }
+
   pluginWillUnload () {
     powercord.api.settings.unregisterSettings(this.entityID);
-    uninject('brep-fake-ref');
     uninject('brep-reply-mention-setting');
     uninject('brep-reply-mention-toggle');
     uninject('brep-reply-appearance');
     uninject('brep-reply-quick-toggle');
+
+    uninject('brep-notif-receive')
+    uninject('brep-notif-visual')
+
+    uninject('brep-fake-ref');
   }
 };

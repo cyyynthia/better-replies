@@ -65,6 +65,7 @@ function Settings ({ getSetting, updateSetting, toggleSetting }) {
         Appearance
       </RadioGroup>
       <RadioGroup
+        note='Affects the behavior of the mention toggle when writing a reply.'
         onChange={(e) => updateSetting('mention', e.value)}
         value={getSetting('mention', 'always')}
         options={[
@@ -85,7 +86,31 @@ function Settings ({ getSetting, updateSetting, toggleSetting }) {
           }
         ]}
       >
-        Mention settings
+        Outgoing replies settings
+      </RadioGroup>
+      <RadioGroup
+        note='Affects how received replies behave regarding wether it will ping you or not.'
+        onChange={(e) => updateSetting('ping', e.value)}
+        value={getSetting('ping', 'default')}
+        options={[
+          {
+            name: 'Default',
+            desc: 'Honors the set behavior by the sender.',
+            value: 'default'
+          },
+          {
+            name: 'Never ping',
+            desc: 'Suppress ping from replies sent with ping enabled. Note: this has no effect on mobile notifications.',
+            value: 'never'
+          },
+          {
+            name: 'Always ping',
+            desc: 'Ping even if the sender disabled the ping. Note: this has no effect on mobile notifications.',
+            value: 'always'
+          }
+        ]}
+      >
+        Incoming replies settings
       </RadioGroup>
       <SwitchItem
         disabled
