@@ -160,7 +160,6 @@ module.exports = class BetterReplies extends Plugin {
         const idx = res.props.children.findIndex((n) =>'withMentionPrefix' in n.props)
         const username = res.props.children[idx]
         username.props.withMentionPrefix = false
-        console.log(username, messageReference)
         // Tooltip
         if (messageReference.__brepEnforced) {
           res.props.children[idx] = [
@@ -177,7 +176,6 @@ module.exports = class BetterReplies extends Plugin {
             username
           ]
         }
-        console.log(res.props.children[idx], messageReference)
       }
       return res
     })
