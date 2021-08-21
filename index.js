@@ -148,7 +148,6 @@ module.exports = class BetterReplies extends Plugin {
       }
 
       if (mode === 'always' && !isMentioned && msg.referenced_message.author.id === user.id && msg.author.id !== user.id) {
-        msg.message_reference.__brepEnforced = true
         msg.mentions.push(user)
       }
 
@@ -156,26 +155,15 @@ module.exports = class BetterReplies extends Plugin {
     }, true)
 
     inject('brep-notif-visual', RepliedMessage, 'default', ([ { baseMessage: { messageReference }, repliedAuthor: { colorString } } ], res) => {
-      if (messageReference.__brepEnforced || messageReference.__brepSuppressed) {
+      if (messageReference.__brepSuppressed) {
         const idx = res.props.children.findIndex((n) =>'withMentionPrefix' in n.props)
         const username = res.props.children[idx]
         username.props.withMentionPrefix = false
-        // Tooltip
-        if (messageReference.__brepEnforced) {
-          res.props.children[idx] = [
-            React.createElement(Tooltip, { text: 'Ping enforced' },
-              React.createElement('b', { className: 'desaturateUserColors-1gar-1', style: { color: colorString } }, '@')),
-            username
-          ]
-        }
-
-        if (messageReference.__brepSuppressed) {
-          res.props.children[idx] = [
-            React.createElement(Tooltip, { text: 'Ping suppressed' },
-              React.createElement('span', { style: { color: 'var(--text-muted)' } }, '@')),
-            username
-          ]
-        }
+        res.props.children[idx] = [
+          React.createElement(Tooltip, { text: 'Ping suppressed' },
+            React.createElement('span', { style: { color: 'var(--text-muted)' } }, '@')),
+          username
+        ]
       }
       return res
     })
