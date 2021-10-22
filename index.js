@@ -48,7 +48,7 @@ module.exports = class BetterReplies extends Plugin {
   }
 
   async injectOutgoingReplies () {
-    const userStore = await getModule([ 'getCurrentUser' ]);
+    const userStore = await getModule([ 'getCurrentUser', 'getUser' ]);
     const replierMdl = await getModule([ 'createPendingReply' ]);
     const Message = await getModule(m => (m.__powercordOriginal_default || m.default)?.toString().includes('childrenRepliedMessage'));
     const ChannelReply = await getModule(m => m.default?.displayName === 'ChannelReply');
@@ -128,7 +128,7 @@ module.exports = class BetterReplies extends Plugin {
   }
 
   async injectIncomingReplies () {
-    const userStore = await getModule([ 'getCurrentUser' ]);
+    const userStore = await getModule([ 'getCurrentUser', 'getUser' ]);
     const messageHandler = await getModule([ 'createMessageRecord' ])
     const RepliedMessage = await getModule((m) => m.default?.displayName === 'RepliedMessage')
 
