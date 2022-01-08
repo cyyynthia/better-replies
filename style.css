@@ -26,25 +26,26 @@
  */
 
 /* If it's tucked there, it's meant to be shown as a quote */
-.contents-2mQqc9 .repliedMessage-VokQwo {
+.contents-2MsGLg .repliedMessage-3Z6XBG {
   padding: 4px 14px;
   margin: 4px 0;
 }
 
-.contents-2mQqc9 .repliedMessage-VokQwo::before {
+.contents-2MsGLg .repliedMessage-3Z6XBG::before {
   left: 0;
   top: 0;
   bottom: 0;
   margin: 0;
+  right: auto;
 }
 
-.compact-T3H92H .contents-2mQqc9 .repliedMessage-VokQwo {
+.compact-2Nkcau .contents-2MsGLg .repliedMessage-3Z6XBG {
   margin: 0;
   padding: 2px 8px;
 }
 
-.compact-T3H92H .contents-2mQqc9 .repliedMessage-VokQwo .username-1A8OIy,
-.compact-T3H92H .contents-2mQqc9 .repliedMessage-VokQwo .repliedTextPreview-2NBljf {
+.compact-2Nkcau .contents-2MsGLg .repliedMessage-3Z6XBG .username-h_Y3Us,
+.compact-2Nkcau .contents-2MsGLg .repliedMessage-3Z6XBG .repliedTextPreview-1bvxun {
   text-indent: 0;
 }
 
