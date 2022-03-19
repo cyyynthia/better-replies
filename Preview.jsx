@@ -36,7 +36,8 @@ const CHANNEL = {
   isSystemDM: () => false,
   getGuildId: () => 'uwu',
   isArchivedThread: () => false,
-  isThread: () => false
+  isThread: () => false,
+  isForumPost: () => false,
 };
 
 const MESSAGE_REF = new Message({
@@ -50,7 +51,7 @@ const MESSAGE_REF = new Message({
     isNonUserBot: () => false,
     getAvatarURL: () => 'https://powercord.dev/api/v2/avatar/465668689920917534.png'
   },
-  content: 'Cynthia be droppin another hot plugin soon™️'
+  content: 'Cynthia be droppin another hot plugin soon™️',
 });
 
 const MESSAGE = new Message({
@@ -66,7 +67,7 @@ const MESSAGE = new Message({
     getAvatarURL: () => 'https://powercord.dev/api/v2/avatar/94762492923748352.png'
   },
   content: 'Heck yeah 😎',
-  messageReference: { __betterRepliesFakeMessage: MESSAGE_REF }
+  messageReference: { __betterRepliesFakeMessage: MESSAGE_REF },
 });
 
 function Settings ({ appearance }) {

@@ -155,7 +155,7 @@ module.exports = class BetterReplies extends Plugin {
       return args
     }, true)
 
-    inject('brep-notif-visual', RepliedMessage, 'default', ([ { baseMessage: { messageReference }, repliedAuthor: { colorString } } ], res) => {
+    inject('brep-notif-visual', RepliedMessage, 'default', ([ { baseMessage: { messageReference } } ], res) => {
       if (messageReference.__brepEnforced || messageReference.__brepSuppressed) {
         const idx = res.props.children.findIndex((n) =>'withMentionPrefix' in n.props)
         const username = res.props.children[idx]
